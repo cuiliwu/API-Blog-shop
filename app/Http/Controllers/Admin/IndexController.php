@@ -3,7 +3,6 @@
  * Created by Engineer CuiLiwu.
  * Project: deal.
  * Date: 2018/5/18-9:41
- * License Hangzhou orce Technology Co., Ltd. Copyright © 2018
  */
 
 namespace App\Http\Controllers\Admin;
@@ -17,7 +16,7 @@ use App\Repository\Repositories\Interfaces\AdminUserRepository;
 class IndexController  extends BaseController
 {
     /**
-     * @var ArticleCategoryRepository
+     * @var AdminUserRepository
      */
     protected $article_cate_repo;
 
@@ -28,7 +27,7 @@ class IndexController  extends BaseController
         $this->request = $request;
     }
     /**
-     * 文章分类列表
+     * 列表
      * 分页
      * */
     public function index(){
@@ -41,7 +40,7 @@ class IndexController  extends BaseController
     }
 
     /**
-     * 文章分类查询
+     * 查询
      *
      * */
     public function show($id)
@@ -50,7 +49,7 @@ class IndexController  extends BaseController
         return $this->success(ErrorConst::SUCCESS_CODE, $change['data']);
     }
     /**
-     * 文章分类添加
+     * 添加
      *
      * */
     public function store(){
@@ -67,7 +66,7 @@ class IndexController  extends BaseController
         return $this->error('创建失败');
     }
     /**
-     * 文章分类修改
+     * 修改
      *
      * */
     public function update($id){
@@ -82,26 +81,13 @@ class IndexController  extends BaseController
         }
     }
     /**
-     * 文章分类删除
+     * 删除
      *
      * */
     public function delete($id){
         $ret = $this->article_cate_repo->delete($id);
 
         return $this->success(ErrorConst::SUCCESS_CODE, ErrorConst::SUCCESS_CODE_MSG);
-    }
-    /**
-     * 设置前台展示
-     *
-     * */
-    public function setShow($id){
-        $is_show= $this->request->get('is_show',1);
-        $ret = $this->article_cate_repo->setShow($is_show,$id);
-        if ($ret){
-            return $this->success(ErrorConst::SUCCESS_CODE, ErrorConst::SUCCESS_CODE_MSG);
-        }else{
-            return $this->error('修改失败');
-        }
     }
 
     /**
@@ -124,7 +110,12 @@ class IndexController  extends BaseController
     }
 
     function test(){
-        return $this->success(ErrorConst::SUCCESS_CODE, ErrorConst::SUCCESS_CODE_MSG);
+        if ($this->request->get('type')=='all'){
+            $articleCate = $this->article_cate_repo->all();
+        }else{
+            $articleCate = $this->article_cate_repo->paginate($this->perPage);
+        }
+        return $this->success(ErrorConst::SUCCESS_CODE, $articleCate, true);
     }
 
 

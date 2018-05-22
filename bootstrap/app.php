@@ -52,4 +52,6 @@ $app->singleton(
 |
 */
 
+$app->register(\App\Providers\RepositoryServiceProvider::class);
+
 return $app;
