@@ -1,0 +1,30 @@
+<?php
+
+$NAMESPACE$
+
+use App\Repository\Repositories\Interfaces\$CLASS$Repository;
+use $MODEL$;
+
+/**
+ * Class $CLASS$RepositoryEloquent.
+ *
+ * @package $NAMESPACE$
+ */
+class $CLASS$RepositoryEloquent extends BaseRepository implements $CLASS$Repository
+{
+    /**
+     * 搜索
+     * @var array
+     */
+    protected $fieldSearchable = [];
+
+    /**
+     * Specify Model class name
+     *
+     * @return string
+     */
+    public function model()
+    {
+        return $CLASS$::class;
+    }
+}

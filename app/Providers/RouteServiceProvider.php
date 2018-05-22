@@ -56,6 +56,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes()
     {
         Route::middleware('web')
+             ->prefix('web')
              ->namespace($this->namespace)
              ->group(base_path('routes/web.php'));
     }
@@ -83,7 +84,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapAdminRoutes()
     {
-        Route::prefix('Kawhi')
+        Route::prefix('backend')
              ->middleware('web')
              ->namespace($this->AdminNameSpace)
              ->group(base_path('routes/kwi.php'));

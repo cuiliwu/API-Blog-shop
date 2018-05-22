@@ -1,23 +1,131 @@
 <?php
-
 /**
  * Created by Engineer CuiLiwu.
  * Project: deal.
- * Date: 2018/5/17-11:22
+ * Date: 2018/5/18-9:41
  * License Hangzhou orce Technology Co., Ltd. Copyright © 2018
  */
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\ConstDir\ErrorConst;
+use App\Http\Controllers\Admin\BaseController;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use App\Repository\Repositories\Interfaces\AdminUserRepository;
 
-class IndexController extends  Controller
+class IndexController  extends BaseController
 {
     /**
-     * 后台首页
-     *
+     * @var ArticleCategoryRepository
+     */
+    protected $article_cate_repo;
+
+
+    public function __construct(AdminUserRepository $article_cate_repo, Request $request)
+    {
+        $this->article_cate_repo = $article_cate_repo;
+        $this->request = $request;
+    }
+    /**
+     * 文章分类列表
+     * 分页
      * */
     public function index(){
-        return view('Admin.index');
+        if ($this->request->get('type')=='all'){
+            $articleCate = $this->article_cate_repo->all();
+        }else{
+            $articleCate = $this->article_cate_repo->paginate($this->perPage);
+        }
+        return $this->success(ErrorConst::SUCCESS_CODE, $articleCate, true);
     }
+
+    /**
+     * 文章分类查询
+     *
+     * */
+    public function show($id)
+    {
+        $change= $this->article_cate_repo->find($id);
+        return $this->success(ErrorConst::SUCCESS_CODE, $change['data']);
+    }
+    /**
+     * 文章分类添加
+     *
+     * */
+    public function store(){
+
+        try {
+            $this->form();
+            if ($action = $this->article_cate_repo->create($this->request->all())) {
+                return $this->success('创建操作成功',$action['data']);
+            }
+        }
+        catch (\Exception $e) {
+            return $this->error($e->getMessage());
+        }
+        return $this->error('创建失败');
+    }
+    /**
+     * 文章分类修改
+     *
+     * */
+    public function update($id){
+        $this->form();
+        $data = $this->request->all();
+
+        $ret = $this->article_cate_repo->update($data, $id);
+        if ($ret) {
+            return $this->success(ErrorConst::SUCCESS_CODE, ErrorConst::SUCCESS_CODE_MSG);
+        } else {
+            return $this->error(ErrorConst::FAILED_CODE);
+        }
+    }
+    /**
+     * 文章分类删除
+     *
+     * */
+    public function delete($id){
+        $ret = $this->article_cate_repo->delete($id);
+
+        return $this->success(ErrorConst::SUCCESS_CODE, ErrorConst::SUCCESS_CODE_MSG);
+    }
+    /**
+     * 设置前台展示
+     *
+     * */
+    public function setShow($id){
+        $is_show= $this->request->get('is_show',1);
+        $ret = $this->article_cate_repo->setShow($is_show,$id);
+        if ($ret){
+            return $this->success(ErrorConst::SUCCESS_CODE, ErrorConst::SUCCESS_CODE_MSG);
+        }else{
+            return $this->error('修改失败');
+        }
+    }
+
+    /**
+     * 后台-验证分类保存
+     * */
+    public function form(){
+        $this->validate($this->request,[
+            'fid'   => 'required|integer',
+            'title' => 'required',
+            'is_show' => 'required',
+            'sort' => 'integer',
+        ], [
+            'fid'   => '父级分类必选|父级分类必选',
+            'title' => '分类名称必填',
+            'is_show' => '是否前台展示必选',
+            'integer' => '排序必须为数字',
+        ]);
+
+        return $this->request->all();
+    }
+
+    function test(){
+        return $this->success(ErrorConst::SUCCESS_CODE, ErrorConst::SUCCESS_CODE_MSG);
+    }
+
+
 }
