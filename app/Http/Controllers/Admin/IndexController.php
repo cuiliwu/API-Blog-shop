@@ -110,6 +110,8 @@ class IndexController  extends BaseController
     }
 
     function test(){
+        var_dump(config('session.cookie'));
+        dd($this->request->session()->all());
         if ($this->request->get('type')=='all'){
             $articleCate = $this->article_cate_repo->all();
         }else{
