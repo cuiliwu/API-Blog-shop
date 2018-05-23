@@ -15,3 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/Test', 'TestController@calNumber');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

@@ -110,15 +110,13 @@ class IndexController  extends BaseController
     }
 
     function test(){
-        var_dump(config('session.cookie'));
-        dd($this->request->session()->all());
         if ($this->request->get('type')=='all'){
             $articleCate = $this->article_cate_repo->all();
         }else{
             $articleCate = $this->article_cate_repo->paginate($this->perPage);
         }
+        cui_log(var_export($this->request->session()->all(),1),'ecclub');
         return $this->success(ErrorConst::SUCCESS_CODE, $articleCate, true);
     }
-
 
 }

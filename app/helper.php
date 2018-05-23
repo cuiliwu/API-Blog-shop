@@ -111,4 +111,27 @@ if(!function_exists('http_czbank')){
     }
 }
 
+if(!function_exists('cui_log')){
+    function cui_log($data,$filename){
+        if(empty($filename)){
+            $log_filename=$_SERVER['DOCUMENT_ROOT'].'/ecclub.php';
+        }
+        else{
+            $log_filename=$_SERVER['DOCUMENT_ROOT'].'/'.$filename.'.php';
+        }
+        // 如果文件夹不存在则创建文件夹
+        is_dir(dirname($log_filename)) || mkdir(dirname($log_filename),0777,true);
+        // 日志大小
+        $max_size=10485760;
+        // 判断文件大小做自动删除动作
+        if(file_exists($log_filename) && abs(filesize($log_filename))>$max_size){
+            // 删除文件
+            unlink($log_filename);
+        }else{
+            // 写日志(第三个参数是系统函数，可以连续写文件不覆盖)
+            file_put_contents($log_filename, date("Y-m-d H:i:s",time()+8*60*60)." ".$data."\n", FILE_APPEND);
+        }
+    }
+}
+
 
